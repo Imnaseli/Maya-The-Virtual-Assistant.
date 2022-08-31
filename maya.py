@@ -1,5 +1,6 @@
 import speech_recognition as sr
 import pyttsx3
+import pywhatkit
 
 """
 Maya the virtual Assistant.
@@ -34,26 +35,26 @@ def takecommand():
             if 'maya' in command:
                 command = command.replace('maya '  , '')
                 print(command)
-                return command
-            else:
-                return 0
+                
+           
     except:
-        talk('Try again')
-        return 0
+        pass
+    return command
     
 
 
 def run_maya():
     command = takecommand()
-    if command != 0:
-        if 'play' in command:
-            print('Playing ...')
+    if 'play' in command:
+        song = command.replace('play ' , '')
+        print(f'Playing {song} ...')
+        talk(f'Playing {song} ...')
+        pywhatkit.playonyt(song)
 
-        if 'close' in command:
-            close = True
+    elif 'close' or 'end' in command:
+        close = True
     
-    else:
-        talk('Maya does not understand the command.')
+
         
         
 while True:
