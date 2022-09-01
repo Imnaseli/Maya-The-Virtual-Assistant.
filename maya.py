@@ -1,39 +1,24 @@
 import speech_recognition as sr
-import pyttsx3
+from talk import talk
+import wikipedia
+import features as my
 from details import *
-import pywhatkit
-# from mayafunctions import *
-from mayafunctions import mayaplaysong, mayatime , wikidefine
-
 """
 Maya the virtual Assistant.
 By Ilesanmi Oluwasijibomi
------------ Notes -----------
+-----------------------------Notes ----------------------------------
 1. Because siji is a bad programmer, in this code Nonetype == 0, to return Nonetype in programs.
 
 """
-
-engine = pyttsx3.init()
 listener = sr.Recognizer()
-
-#To give Maya a female voice
-voices = engine.getProperty('voices')
-engine.setProperty('voice' , voices[1].id )
-
-
-close = False
-
-#Maya talk funtion for her to speak.
-def talk(text):
-    engine.say(text)
-    engine.runAndWait()
-
+close = 0
 
 def takecommand():
+    command = ''
     try:
         with sr.Microphone() as source:
-            talk('Maya,  is all ears ...')
-            print('Listening...')
+            talk('Maya,  is listening ...')
+            # print('Listening...')
             voice = listener.listen(source)
             command = listener.recognize_google(voice)
             command = command.lower()            
@@ -44,22 +29,29 @@ def takecommand():
         pass
     return command
     
-
-
 def run_maya():
     command = takecommand()
-    if 'play' in command: mayaplaysong(command)
-    elif 'time' in command: mayatime()      
-    elif 'close' or 'end' in command: close = True
+    if 'play' in command:my.mayaplaysong(command)
+    elif 'time' in command:my.mayatime()  
+    elif 'close' in command: 
+        global close
+        close = 1
     
-    elif '' in command:
-        for phrase in wikipediaphrase:
-            if phrase in command: wikidefine(command , phrase)
-            else:pass
-        
-        
-while True:
-    run_maya()
-    if close == True:
-        talk('Maya is switching off.')
-        break
+    elif 'define ' in command or 'what is ' in command:
+        # my.wikidefine(command)
+        info  =  command.replace('define ', '')
+        answer = wikipedia.summary(info,2)
+        talk (answer)
+
+
+def main():
+    while True:
+        run_maya()
+        global close
+        if close == 1:
+            talk('Maya is switching off.')
+            break
+    print('Maya is switching off.')
+    return
+
+main()
