@@ -1,6 +1,9 @@
 import speech_recognition as sr
 import pyttsx3
+from details import *
 import pywhatkit
+# from mayafunctions import *
+from mayafunctions import mayaplaysong, mayatime , wikidefine
 
 """
 Maya the virtual Assistant.
@@ -16,6 +19,8 @@ listener = sr.Recognizer()
 #To give Maya a female voice
 voices = engine.getProperty('voices')
 engine.setProperty('voice' , voices[1].id )
+
+
 close = False
 
 #Maya talk funtion for her to speak.
@@ -35,8 +40,6 @@ def takecommand():
             if 'maya' in command:
                 command = command.replace('maya '  , '')
                 print(command)
-                
-           
     except:
         pass
     return command
@@ -45,16 +48,14 @@ def takecommand():
 
 def run_maya():
     command = takecommand()
-    if 'play' in command:
-        song = command.replace('play ' , '')
-        print(f'Playing {song} ...')
-        talk(f'Playing {song} ...')
-        pywhatkit.playonyt(song)
-
-    elif 'close' or 'end' in command:
-        close = True
+    if 'play' in command: mayaplaysong(command)
+    elif 'time' in command: mayatime()      
+    elif 'close' or 'end' in command: close = True
     
-
+    elif '' in command:
+        for phrase in wikipediaphrase:
+            if phrase in command: wikidefine(command , phrase)
+            else:pass
         
         
 while True:
